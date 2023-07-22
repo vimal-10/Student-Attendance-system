@@ -1,0 +1,1374 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <ctime>
+#include <stdio.h>
+#include <fstream>
+#include <sstream>
+#include <conio.h>
+using namespace std;
+
+#include <mysql/jdbc.h>
+using namespace sql;
+
+
+int main()
+{
+	string accountID, password, accountID1, password1, lecturer, lecturerpassword, student, studentpassword, name, matric, studentaddress, studentcourse, studentfaculty, studentsubject1, studentsubject2,
+		studentsubject3, studentsubject4, studentsubject5, studentuserid, studentpass, name1, matric1, studentaddress1, studentcourse1, studentfaculty1, studentsubject11, studentsubject21,
+		studentsubject31, studentsubject41, studentsubject51, studentuserid1, studentpass1,
+		lecturername, lectureraddress, lecturerfaculty, lecturercourse, lecturersubject1, lecturersubject2, lectureruserid, lecturerpass, deletestudent, deletelecturer, addfaculty, addcourse, addsubject,
+		editname, editmatric, editaddress, editfaculty, editcourse, editsubject1, editsubject2, editsubject3, editsubject4, editsubject5, editusername, editpassword, reason, present, absent, subject, sub1, sub2, sub3, sub4, sub5, studentmatric,
+		editlecname, editlecmatric, editlecaddress, editlecfaculty, editleccourse, editlecsubject1, editlecsubject2, editlecusername, editlecpassword, timet;
+	int login, sign, sign1, admin, studentportal, atten, atten1, atten2, atten3, atten4, attendence, lecturerportal, studentsubject;
+
+	cout << "\t\t\t\t/*WELCOME TO STUDENT MANAGEMENT SYSTEM*/\n\n\n";
+
+	cout << "\t\t\t\t\t//////////////////////////\n";
+	cout << "\t\t\t\t\t//"; cout << "\t1.ADMIN\t\t// ";cout << "\n";
+	cout << "\t\t\t\t\t//"; cout << "\t\t\t// "; cout << "\n";
+	cout << "\t\t\t\t\t//"; cout << "\t2.LECTURER\t// ";cout << "\n";
+	cout << "\t\t\t\t\t//"; cout << "\t\t\t// "; cout << "\n";
+	cout << "\t\t\t\t\t//"; cout << "\t3.STUDENT\t// "; cout << "\n";
+	cout << "\t\t\t\t\t//////////////////////////\n\n";
+	cout << "\t\t\t\t\tChoose number between (1-3): ";
+	cin >> login;
+	switch (login) {
+	case 1:
+		system("cls");
+		cout << "\t\t\t\t\t\t     /*ADMIN PORTAL*/    \n\n\n";
+		cout << "Admin ID:";
+		cin >> accountID;
+		cout << "Password:";
+		cin >> password;
+		break;
+
+	case 2:
+		system("cls");
+		cout << "\t\t\t\t\t    /*LECTURER PORTAL*/   \n\n\n";
+		cout << "\t\t\t\t\t//////////////////////////\n";
+		cout << "\t\t\t\t\t//"; cout << "\t1.Sign up\t//"; cout << "\n";
+		cout << "\t\t\t\t\t//"; cout << "\t\t\t// "; cout << "\n";
+		cout << "\t\t\t\t\t//"; cout << "\t2.Register\t//"; cout << "\n";
+		cout << "\t\t\t\t\t//////////////////////////\n\n";
+		cout << "\t\t\t\t\tChoose number between (1-2): ";
+		cin >> sign;
+		switch (sign) {
+		case 1:
+			cout << "Lecturer ID:";
+			cin >> lecturer;
+			cout << "password:";
+			cin >> lecturerpassword;
+			break;
+		case 2:
+
+			cout << "Enter name:";
+			cin >> lecturername;
+			cout << "Address:";
+			cin >> lectureraddress;
+			cout << "Faculty:";
+			cin >> lecturerfaculty;
+			cout << "Course:";
+			cin >> lecturercourse;
+			cout << "Subject 1:";
+			cin >> lecturersubject1;
+			cout << "Subject 2:";
+			cin >> lecturersubject2;
+			cout << "Username:";
+			cin >> lectureruserid;
+			cout << "Password:";
+			cin >> lecturerpass;
+			break;
+		default:
+			cout << "Wrong input";
+			break;
+		}
+		break;
+	case 3:
+		system("cls");
+		cout << "\t\t\t\t\t    /*STUDENT PORTAL*/    \n\n\n";
+		cout << "\t\t\t\t\t//////////////////////////\n";
+		cout << "\t\t\t\t\t//"; cout << "\t1.Sign up\t//"; cout << "\n";
+		cout << "\t\t\t\t\t//"; cout << "\t\t\t// "; cout << "\n";
+		cout << "\t\t\t\t\t//"; cout << "\t2.Register\t//"; cout << "\n";
+		cout << "\t\t\t\t\t//////////////////////////\n\n";
+		cout << "\t\t\t\t\tChoose number between (1-2): ";
+		cin >> sign1;
+		switch (sign1) {
+		case 1:
+			cout << "Student ID:";
+			cin >> student;
+			cout << "password:";
+			cin >> studentpassword;
+			break;
+		case 2:
+
+			cout << "Enter name:";
+			cin >> name;
+			cout << "Enter matric no:";
+			cin >> matric;
+			cout << "Address:";
+			cin >> studentaddress;
+			cout << "Faculty:";
+			cin >> studentfaculty;
+			cout << "Course:";
+			cin >> studentcourse;
+			cout << "Subject 1:";
+			cin >> studentsubject1;
+			cout << "Subject 2:";
+			cin >> studentsubject2;
+			cout << "Subject 3:";
+			cin >> studentsubject3;
+			cout << "Subject 4:";
+			cin >> studentsubject4;
+			cout << "Subject 5:";
+			cin >> studentsubject5;
+			cout << "Username:";
+			cin >> studentuserid;
+			cout << "Password:";
+			cin >> studentpass;
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+
+	}
+	{
+		mysql::MySQL_Driver* driver = mysql::get_mysql_driver_instance();
+		Connection* connection = driver->connect("tcp://127.0.0.1:3306", "root", "");
+
+		connection->setSchema("workshop_1");
+
+		PreparedStatement* ps = connection->prepareStatement("SELECT * FROM admin WHERE AdminID = ? AND Password = ?");
+
+		ps->setString(1, accountID);
+		ps->setString(2, password);
+
+		ResultSet* rs = ps->executeQuery();
+
+		if (rs->next())
+		{
+			cout << "Choose:";
+			cout << "\t1.Delete Student Detail\n";
+			cout << "\t2.Delete Lecturer detail\n";
+			cin >> admin;
+			switch (admin) {
+			case 1:
+				cout << "Write student id:";
+				cin >> deletestudent;
+				break;
+			case 2:
+				cout << "Write lecturer id:";
+				cin >> deletelecturer;
+				break;
+			default:
+				break;
+			}
+		}
+		else
+		{
+			cout << "\t\t\t\t\t////////////////////\n";
+			cout << "\t\t\t\t\t/";cout << " Please try again ";cout << "/\n";
+			cout << "\t\t\t\t\t////////////////////\n\n\n";
+			cout << "Admin ID:" << endl;
+			cin >> accountID1;
+			cout << "Password:" << endl;
+			cin >> password1;
+
+			PreparedStatement* pt = connection->prepareStatement("SELECT * FROM admin WHERE AdminID = ? AND Password = ?");
+
+			pt->setString(1, accountID1);
+			pt->setString(2, password1);
+
+			ResultSet* rt = pt->executeQuery();
+
+			if (rt->next())
+			{
+				cout << "Choose:";
+				cout << "\t1.Delete Student Detail\n";
+				cout << "\t2.Delete Lecturer detail\n";
+				cin >> admin;
+				switch (admin) {
+				case 1:
+					cout << "Write student id:";
+					cin >> deletestudent;
+					break;
+				case 2:
+					cout << "Write lecturer id:";
+					cin >> deletelecturer;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	
+
+		rs->close();
+		ps->close();
+		connection->close();
+
+		delete rs;
+		delete ps;
+		delete connection;
+
+	}
+	{
+		mysql::MySQL_Driver* driver = mysql::get_mysql_driver_instance();
+		Connection* connection1 = driver->connect("tcp://127.0.0.1:3306", "root", "");
+
+		connection1->setSchema("workshop_1");
+		PreparedStatement* qs = connection1->prepareStatement("SELECT * FROM lecturerlogin WHERE LecturerID = ? AND Password = ?");
+
+		qs->setString(1, lecturer);
+		qs->setString(2, lecturerpassword);
+
+		ResultSet* ts = qs->executeQuery();
+
+		if (ts->next())
+		{ 
+			cout << "\t\t\t\t*******************************************\n";
+			cout << "\t\t\t\t Hello " << ts->getString("Name") << ", and welcome to the system\n";
+			cout << "\t\t\t\t*******************************************\n\n";
+			cout << "\t\t\t\t\t1.Edit lecturer details\n";
+			cout << "\t\t\t\t\t2.View subject Attendence\n";
+			cout << "\t\t\t\t\t3.View student Attendence\n";
+
+			cin >> lecturerportal;
+			switch (lecturerportal)
+			{
+			case 1:
+			{
+				cout << "Enter	Name:";
+				cin >> editlecname;
+				PreparedStatement* tss = connection1->prepareStatement("UPDATE lecturerlogin SET Name = ? WHERE LecturerID = ?");
+
+				tss->setString(1, editlecname);
+				tss->setString(2, lecturer);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Address:";
+				cin >> editlecaddress;
+				PreparedStatement* tss = connection1->prepareStatement("UPDATE lecturerlogin SET address = ? WHERE LecturerID = ?");
+
+				tss->setString(1, editlecaddress);
+				tss->setString(2, lecturer);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Faculty:";
+				cin >> editlecfaculty;
+				PreparedStatement* tss = connection1->prepareStatement("UPDATE lecturerlogin SET faculty = ? WHERE LecturerID = ?");
+
+				tss->setString(1, editlecfaculty);
+				tss->setString(2, lecturer);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Course:";
+				cin >> editleccourse;
+				PreparedStatement* tss = connection1->prepareStatement("UPDATE lecturerlogin SET course = ? WHERE LecturerID = ?");
+
+				tss->setString(1, editleccourse);
+				tss->setString(2, lecturer);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Subject1:";
+				cin >> editlecsubject1;
+				PreparedStatement* tss = connection1->prepareStatement("UPDATE lecturerlogin SET subject1 = ? WHERE LecturerID = ?");
+
+				tss->setString(1, editlecsubject1);
+				tss->setString(2, lecturer);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Subject2:";
+				cin >> editlecsubject2;
+				PreparedStatement* tss = connection1->prepareStatement("UPDATE lecturerlogin SET subject2 = ? WHERE LecturerID = ?");
+
+				tss->setString(1, editlecsubject2);
+				tss->setString(2, lecturer);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Username:";
+				cin >> editlecusername;
+				PreparedStatement* tss = connection1->prepareStatement("UPDATE lecturerlogin SET LecturerID = ? WHERE LecturerID = ?");
+
+				tss->setString(1, editlecusername);
+				tss->setString(2, lecturer);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Password:";
+				cin >> editlecpassword;
+				PreparedStatement* tss = connection1->prepareStatement("UPDATE lecturerlogin SET Password = ? WHERE LecturerID = ?");
+
+				tss->setString(1, editlecpassword);
+				tss->setString(2, lecturer);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			break;
+			case 2:
+			{
+				cout << "Choose Subject:" << endl;
+				cout << " 1. " << ts->getString("subject1") << "\n" << endl;
+				cout << " 2. " << ts->getString("subject2") << "\n" << endl;
+				cin >> studentsubject;
+				switch (studentsubject)
+				{
+				case 1:
+				{
+					struct tm newtime;
+					time_t now = time(0);
+					localtime_s(&newtime, &now);
+					int Day = newtime.tm_mday;
+					int Month = 1 + newtime.tm_mon;
+					int Year = 1900 + newtime.tm_year;
+					stringstream ss, vv, rr;
+					ss << Day;
+					vv << Month;
+					rr << Year;
+					string s, v, r;
+					ss >> s;
+					vv >> v;
+					rr >> r;
+					PreparedStatement* vs = connection1->prepareStatement("SELECT * FROM studentattendence WHERE subject = '" + ts->getString("subject1") + "' AND Day = '" + s + "'");
+
+
+					ResultSet* zs = vs->executeQuery();
+
+
+
+					cout << left << setw(20) << " MatricID " << left << setw(10) << " Course " << left << setw(8) << " Attendence " << left << setw(8) << " Reason " << endl;
+
+					while (zs->next())
+					{
+
+						cout << left << setw(20) << zs->getString("MatricID") << left << setw(10) << zs->getString("course") << left << setw(8) << zs->getString("attendance") << left << setw(8) << zs->getString("reason") << endl;
+
+
+					}
+
+					int column_count = 0;
+					PreparedStatement* ur = connection1->prepareStatement("SELECT COUNT(attendance) AS column_count FROM studentattendence WHERE Day = '" + s + "' AND subject = '" + ts->getString("subject1") + "' ");
+
+
+					ResultSet* pr = ur->executeQuery();
+					if (pr->next()) {
+						string clm = pr->getString("column_count");
+						stringstream xx;
+						xx << clm;
+						float x;
+						xx >> x;
+
+						int row_count = 0;
+						PreparedStatement* sr = connection1->prepareStatement("SELECT COUNT(attendance) AS row_count FROM studentattendence WHERE attendance = 'PRESENT' AND subject = '" + ts->getString("subject1") + "' AND Day = '" + s + "' ");
+
+
+						ResultSet* tr = sr->executeQuery();
+						if (tr->next()) {
+
+
+							string std = tr->getString("row_count");
+							stringstream ff;
+							ff << std;
+							float f;
+							ff >> f;
+							cout << "Daily Precentage of attendence:" << (f / x) * 100 << "%" << endl;
+
+
+						}
+					}
+					break;
+				}
+				case 2:
+				{
+
+					struct tm newtime;
+					time_t now = time(0);
+					localtime_s(&newtime, &now);
+					int Day = newtime.tm_mday;
+					int Month = 1 + newtime.tm_mon;
+					int Year = 1900 + newtime.tm_year;
+					stringstream ss, vv, rr;
+					ss << Day;
+					vv << Month;
+					rr << Year;
+					string s, v, r;
+					ss >> s;
+					vv >> v;
+					rr >> r;
+					PreparedStatement* vs = connection1->prepareStatement("SELECT * FROM studentattendence WHERE subject = '" + ts->getString("subject2") + "'");
+
+
+					ResultSet* zs = vs->executeQuery();
+
+
+					cout << left << setw(20) << " MatricID " << left << setw(10) << " Course " << left << setw(8) << " Attendence " << left << setw(8) << " Reason " << endl;
+
+					while (zs->next())
+					{
+
+						cout << left << setw(20) << zs->getString("MatricID") << left << setw(10) << zs->getString("course") << left << setw(8) << zs->getString("attendance") << left << setw(8) << zs->getString("reason") << endl;
+					}
+
+					int column_count = 0;
+					PreparedStatement* ur = connection1->prepareStatement("SELECT COUNT(attendance) AS column_count FROM studentattendence WHERE Day = '" + s + "' AND subject = '" + ts->getString("subject2") + "' ");
+
+
+					ResultSet* pr = ur->executeQuery();
+					if (pr->next()) {
+						string clm = pr->getString("column_count");
+						stringstream xx;
+						xx << clm;
+						float x;
+						xx >> x;
+
+						int row_count = 0;
+						PreparedStatement* sr = connection1->prepareStatement("SELECT COUNT(attendance) AS row_count FROM studentattendence WHERE attendance = 'PRESENT' AND subject = '" + ts->getString("subject2") + "' AND Day = '" + s + "' ");
+
+
+						ResultSet* tr = sr->executeQuery();
+						if (tr->next()) {
+
+
+							string std = tr->getString("row_count");
+							stringstream ff;
+							ff << std;
+							float f;
+							ff >> f;
+							cout << "Daily Precentage of attendence:" << (f / x) * 100 << "%" << endl;
+
+						}
+
+					}
+					break;
+				}
+				default:
+					break;
+				}
+					break;
+			}
+			case 3:
+			{
+				cout << "Choose Subject:" << endl;
+				cout << " 1. " << ts->getString("subject1") << "\n" << endl;
+				cout << " 2. " << ts->getString("subject2") << "\n" << endl;
+				cin >> studentsubject;
+				switch (studentsubject)
+				{
+				case 1:
+				{
+					cout << "Enter matric no:";
+					cin >> studentmatric;
+					{
+						PreparedStatement* vs = connection1->prepareStatement("SELECT * FROM studentattendence WHERE subject = '" + ts->getString("subject1") + "' AND MatricID = '" + studentmatric + "'");
+
+
+						ResultSet* zs = vs->executeQuery();
+
+
+						cout << left << setw(20) << " MatricID " << left << setw(10) << " Course " << left << setw(8) << " Attendence " << left << setw(8) << "\t Reason " << left << setw(8) << "\t Day " << left << setw(8) << "\t Month " << left << setw(8) << "\t Year " << endl;
+
+						while (zs->next())
+						{
+
+							cout << left << setw(21) << zs->getString("MatricID") << left << setw(11) << zs->getString("course") << left << setw(9) << zs->getString("attendance") << left << setw(24) << zs->getString("reason") <<  left << setw(9) << zs->getString("Day") << left << setw(7) << zs->getString("Month") << left << setw(7) << zs->getString("Year") << endl;
+						}
+
+						int column_count = 0;
+						PreparedStatement* ur = connection1->prepareStatement("SELECT COUNT(attendance) AS column_count FROM studentattendence WHERE subject = '" + ts->getString("subject1") + "'  AND MatricID = '" + studentmatric + "' ");
+
+
+						ResultSet* pr = ur->executeQuery();
+						if (pr->next()) {
+							string clm = pr->getString("column_count");
+							stringstream xx;
+							xx << clm;
+							float x;
+							xx >> x;
+
+							int row_count = 0;
+							PreparedStatement* sr = connection1->prepareStatement("SELECT COUNT(attendance) AS row_count FROM studentattendence WHERE attendance = 'PRESENT' AND subject = '" + ts->getString("subject1") + "'  AND MatricID = '" + studentmatric + "'");
+
+
+							ResultSet* tr = sr->executeQuery();
+							if (tr->next()) {
+
+
+								string std = tr->getString("row_count");
+								stringstream ff;
+								ff << std;
+								float f;
+								ff >> f;
+								cout << "Student Precentage of attendence:" << (f / x) * 100 << "%" << endl;
+
+							}
+
+						}
+
+					}
+					break;
+				}
+				case 2:
+				{
+					{
+						PreparedStatement* vs = connection1->prepareStatement("SELECT * FROM studentattendence WHERE subject = '" + ts->getString("subject2") + "' AND MatricID = '" + studentmatric + "'");
+
+
+						ResultSet* zs = vs->executeQuery();
+
+
+						cout << left << setw(20) << " MatricID " << left << setw(10) << " Course " << left << setw(8) << " Attendence " << left << setw(8) << " Reason " << endl;
+
+						while (zs->next())
+						{
+
+							cout << left << setw(20) << zs->getString("MatricID") << left << setw(10) << zs->getString("course") << left << setw(8) << zs->getString("attendance") << left << setw(8) << zs->getString("reason") << endl;
+						}
+
+						int column_count = 0;
+						PreparedStatement* ur = connection1->prepareStatement("SELECT COUNT(attendance) AS column_count FROM studentattendence WHERE subject = '" + ts->getString("subject2") + "' AND MatricID = '"+ studentmatric +"' ");
+
+
+						ResultSet* pr = ur->executeQuery();
+						if (pr->next()) {
+							string clm = pr->getString("column_count");
+							stringstream xx;
+							xx << clm;
+							float x;
+							xx >> x;
+
+							int row_count = 0;
+							PreparedStatement* sr = connection1->prepareStatement("SELECT COUNT(attendance) AS row_count FROM studentattendence WHERE attendance = 'PRESENT' AND subject = '" + ts->getString("subject2") + "'  AND MatricID = '" + studentmatric + "'");
+
+
+							ResultSet* tr = sr->executeQuery();
+							if (tr->next()) {
+
+
+								string std = tr->getString("row_count");
+								stringstream ff;
+								ff << std;
+								float f;
+								ff >> f;
+								cout << "Student Precentage of attendence:" << (f / x) * 100 << "%" << endl;
+
+							}
+
+						}
+
+					}
+				}
+				default:
+					break;
+				}
+				break;
+
+			}
+
+			default:
+				break;
+			}
+
+
+			ts->close();
+			qs->close();
+			connection1->close();
+
+			delete ts;
+			delete qs;
+			delete connection1;
+
+
+
+		}
+	}
+	{
+		mysql::MySQL_Driver* driver = mysql::get_mysql_driver_instance();
+		Connection* connection9 = driver->connect("tcp://127.0.0.1:3306", "root", "");
+
+		connection9->setSchema("workshop_1");
+		PreparedStatement* ys = connection9->prepareStatement("SELECT * FROM studentlogin WHERE StudentID = ? AND Password = ?");
+
+		ys->setString(1, student);
+		ys->setString(2, studentpassword);
+
+		ResultSet* hs = ys->executeQuery();
+
+		if (hs->next())
+		{
+			cout << "\t\t\t\t*******************************************\n";
+			cout << "\t\t\t\t Hello " << hs->getString("Name") << ", and welcome to the system\n";
+			cout << "\t\t\t\t*******************************************\n\n";
+			cout << "\t\t\t\t\t1.Edit student details\n";
+			cout << "\t\t\t\t\t2.Attendence\n";
+			cin >> studentportal;
+			switch (studentportal)
+			{
+			case 1:
+			{
+				cout << "Enter	Name:";
+				cin >> editname;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET Name = ? WHERE StudentID = ?");
+
+				tss->setString(1, editname);
+				tss->setString(2,student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Matric ID:";
+				cin >> editmatric;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET matricid = ? WHERE StudentID = ?");
+
+				tss->setString(1, editmatric);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Address:";
+				cin >> editaddress;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET address = ? WHERE StudentID = ?");
+
+				tss->setString(1, editaddress);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{	
+				cout << "Enter Faculty:";
+			    cin >> editfaculty;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET faculty = ? WHERE StudentID = ?");
+
+				tss->setString(1, editfaculty);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Course:";
+				cin >> editcourse;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET course = ? WHERE StudentID = ?");
+
+				tss->setString(1, editcourse);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Subject1:";
+				cin >> editsubject1;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET subject1 = ? WHERE StudentID = ?");
+
+				tss->setString(1, editsubject1);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Subject2:";
+				cin >> editsubject2;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET subject2 = ? WHERE StudentID = ?");
+
+				tss->setString(1, editsubject2);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{	
+				cout << "Enter Subject3:";
+			    cin >> editsubject3;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET subject3 = ? WHERE StudentID = ?");
+
+				tss->setString(1, editsubject3);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Subject4:";
+				cin >> editsubject4;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET subject4 = ? WHERE StudentID = ?");
+
+				tss->setString(1, editsubject4);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Subject5:";
+				cin >> editsubject5;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET subject5 = ? WHERE StudentID = ?");
+
+				tss->setString(1, editsubject5);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Username:";
+				cin >> editusername;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET StudentID = ? WHERE StudentID = ?");
+
+				tss->setString(1, editusername);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+			{
+				cout << "Enter Password:";
+				cin >> editpassword;
+				PreparedStatement* tss = connection9->prepareStatement("UPDATE studentlogin SET Password = ?");
+
+				tss->setString(1, editpassword);
+				tss->setString(2, student);
+
+				ResultSet* is = tss->executeQuery();
+			}
+				break;
+			case 2:
+
+					cout << "Choose subject:" << endl;
+					cout << " 1. " << hs->getString("subject1") << "\n"  << endl;
+					cout << " 2. " << hs->getString("subject2") << "\n"  << endl;
+					cout << " 3. " << hs->getString("subject3") << "\n"  << endl;
+					cout << " 4. " << hs->getString("subject4") << "\n"  << endl;
+					cout << " 5. " << hs->getString("subject5") << "\n"  << endl;
+					cin >> attendence;
+					switch (attendence) {
+					case 1: {
+							cout << "1.PRESENT\n" ;
+							cout << "2.ABSENT\n" ;
+							cin >> atten;
+							if (atten == 2)
+							{
+								cout << "Reason :";
+								cin >> reason;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 01 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss,vv,rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s,v,r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, reason, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','"+ hs->getString("subject1") +"','ABSENT','"+reason +"','"+s+"','" + v + "','" + r + "')");
+
+
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) 
+								{
+
+									cout << "\t\t\t\t  The attendance have been added\n";
+									cout << endl;
+								}
+							}
+							else if (atten == 1)
+							{
+								cout << "THANK YOU" << endl;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 1 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss,vv,rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s,v,r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+								
+									PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject1") + "','PRESENT', '"+s+"','" + v + "','" + r + "')");
+
+
+									ResultSet* js = ks->executeQuery();
+									if (js->next()) 
+									{
+
+										cout << "\t\t\t\t The attendance have been added\n";
+										cout << endl;
+									}
+							
+							}
+							else
+							{
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject1") + "','ABSENT')");
+
+
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) {
+
+									cout << "\t\t\t\t Hello " << js->getString("Name") << ", the attendance have been added\n";
+								}
+							}
+						break;
+					}
+					case 2: {
+
+
+							cout << "1.PRESENT\n";
+							cout << "2.ABSENT\n";
+							cin >> atten1;
+							if (atten1 == 2)
+							{
+								cout << "Reason :";
+								cin >> reason;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 1 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss, vv, rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s, v, r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, reason, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject2") + "','ABSENT','" + reason + "','" + s + "','" + v + "','" + r + "')");
+								
+								
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) {
+
+									cout << "\t\t\t\t Hello " << js->getString("Name") << ", the attendance have been added\n";
+								}
+
+							}
+							else
+							{
+								cout << "THANK YOU" << endl;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 1 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss, vv, rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s, v, r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject2") + "','PRESENT','" + s + "','" + v + "','" + r + "')");
+
+								
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) {
+
+									cout << "\t\t\t\t Hello " << js->getString("Name") << ", the attendance have been added\n";
+								}
+							}
+						break;
+					}
+					case 3: {
+
+							cout << "1.PRESENT\n";
+							cout << "2.ABSENT\n";
+							cin >> atten2;
+							if (atten2 == 2)
+							{
+								cout << "Reason :";
+								cin >> reason;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 1 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss, vv, rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s, v, r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, reason, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject3") + "','ABSENT','" + reason + "','" + s + "','" + v + "','" + r + "')");
+
+
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) {
+
+									cout << "\t\t\t\t Hello " << js->getString("Name") << ", the attendance have been added\n";
+								}
+							}
+							else
+							{
+								cout << "THANK YOU" << endl;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 1 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss, vv, rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s, v, r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject3") + "','PRESENT','" + s + "','" + v + "','" + r + "')");
+
+
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) {
+
+									cout << "\t\t\t\t Hello " << js->getString("Name") << ", the attendance have been added\n";
+								}
+							}
+						break;
+					}
+					case 4: {
+
+							cout << "1.PRESENT\n";
+							cout << "2.ABSENT\n";
+							cin >> atten3;
+							if (atten3 == 2)
+							{
+								cout << "Reason :";
+								cin >> reason;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 1 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss, vv, rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s, v, r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, reason, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject4") + "','ABSENT','" + reason + "','" + s + "','" + v + "','" + r + "')");
+
+
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) {
+
+									cout << "\t\t\t\t Hello " << js->getString("Name") << ", the attendance have been added\n";
+								}
+							}
+							else
+							{
+								cout << "THANK YOU" << endl;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 1 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss, vv, rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s, v, r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject4") + "','PRESENT','" + s + "','" + v + "','" + r + "')");
+
+
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) {
+
+									cout << "\t\t\t\t Hello " << js->getString("Name") << ", the attendance have been added\n";
+								}
+							}
+						  break;
+					}
+					case 5: {
+
+							cout << "1.PRESENT\n";
+							cout << "2.ABSENT\n";
+							cin >> atten4;
+							if (atten4 == 2)
+							{
+								cout << "Reason :";
+								cin >> reason;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 1 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss, vv, rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s, v, r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, reason, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject5") + "','ABSENT','" + reason + "','" + s + "','" + v + "','" + r + "')");
+
+
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) {
+
+									cout << "\t\t\t\t Hello " << js->getString("Name") << ", the attendance have been added\n";
+								}
+							}
+							else
+							{
+								cout << "THANK YOU" << endl;
+								struct tm newtime;
+								time_t now = time(0);
+								localtime_s(&newtime, &now);
+								int Day = newtime.tm_mday;
+								int Month = 1 + newtime.tm_mon;
+								int Year = 1900 + newtime.tm_year;
+								stringstream ss, vv, rr;
+								ss << Day;
+								vv << Month;
+								rr << Year;
+								string s, v, r;
+								ss >> s;
+								vv >> v;
+								rr >> r;
+								cout << "   " << Year << "-" << std::setfill('0') << std::setw(2) << Month << "-" << std::setfill('0') << std::setw(2) << Day << endl;
+
+								PreparedStatement* ks = connection9->prepareStatement("INSERT INTO studentattendence (MatricID, course, subject, attendance, Day, Month, Year) VALUES('" + hs->getString("matricid") + "','" + hs->getString("course") + "','" + hs->getString("subject5") + "','PRESENT','" + s + "','" + v + "','" + r + "')");
+
+
+
+								ResultSet* js = ks->executeQuery();
+								if (js->next()) {
+
+									cout << "\t\t\t\t Hello " << js->getString("Name") << ", the attendance have been added\n";
+								}
+							}
+						break;
+					}
+					default :
+						break;
+					}
+			     break;
+			default:
+				break;
+			}
+
+		}
+
+
+		hs->close();
+		ys->close();
+		connection9->close();
+
+		delete hs;
+		delete ys;
+		delete connection9;
+
+	}
+	{
+		mysql::MySQL_Driver* driver = mysql::get_mysql_driver_instance();
+		Connection* connection3 = driver->connect("tcp://127.0.0.1:3306", "root", "");
+
+		connection3->setSchema("workshop_1");
+		PreparedStatement* cs = connection3->prepareStatement("INSERT INTO lecturerlogin (LecturerID, Password, Name, address, faculty, course, subject1, subject2) VALUES(?,?,?,?,?,?,?,?)");
+
+		cs->setString(1, lectureruserid);
+		cs->setString(2, lecturerpass);
+		cs->setString(3, lecturername);
+		cs->setString(4, lectureraddress);
+		cs->setString(5, lecturerfaculty);
+		cs->setString(6, lecturercourse);
+		cs->setString(7, lecturersubject1);
+		cs->setString(8, lecturersubject2);
+
+		ResultSet* os = cs->executeQuery();
+
+		if (os->next())
+		{
+			cout << " You have been registered " << endl;
+
+		}
+
+
+		os->close();
+		cs->close();
+		connection3->close();
+
+		delete os;
+		delete cs;
+		delete connection3;
+
+	}
+	{
+		mysql::MySQL_Driver* driver = mysql::get_mysql_driver_instance();
+		Connection* connection4 = driver->connect("tcp://127.0.0.1:3306", "root", "");
+
+		connection4->setSchema("workshop_1");
+		PreparedStatement* lt = connection4->prepareStatement("SELECT * FROM studentlogin WHERE matricid = '"+matric+"'");
+
+		ResultSet* bt = lt->executeQuery();
+		if (bt->next()) {
+
+
+			cout << "\t\t\t\t\t////////////////////\n";
+			cout << "\t\t\t\t\t/"; cout << " Please try again "; cout << "/\n";
+			cout << "\t\t\t\t\t////////////////////\n\n\n";
+
+			cout << "Enter name:" << endl;
+			cin >> name1;
+			cout << "Enter matric no:" << endl;
+			cin >> matric1;
+			cout << "Address:" << endl;
+			cin >> studentaddress1;
+			cout << "Faculty:" << endl;
+			cin >> studentfaculty1;
+			cout << "Course:" << endl;
+			cin >> studentcourse1;
+			cout << "Subject 1:" << endl;
+			cin >> studentsubject11;
+			cout << "Subject 2:" << endl;
+			cin >> studentsubject21;
+			cout << "Subject 3:" << endl;
+			cin >> studentsubject31;
+			cout << "Subject 4:" << endl;
+			cin >> studentsubject41;
+			cout << "Subject 5:" << endl;
+			cin >> studentsubject51;
+			cout << "Username:" << endl;
+			cin >> studentuserid1;
+			cout << "Password:" << endl;
+			cin >> studentpass1;
+
+			PreparedStatement* le = connection4->prepareStatement("INSERT INTO studentlogin (StudentID, Password, Name, matricid, address, faculty, course, subject1, subject2, subject3, subject4, subject5) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+
+			le->setString(1, studentuserid1);
+			le->setString(2, studentpass1);
+			le->setString(3, name1);
+			le->setString(4, matric1);
+			le->setString(5, studentaddress1);
+			le->setString(6, studentfaculty1);
+			le->setString(7, studentcourse1);
+			le->setString(8, studentsubject11);
+			le->setString(9, studentsubject21);
+			le->setString(10, studentsubject31);
+			le->setString(11, studentsubject41);
+			le->setString(12, studentsubject51);
+
+			ResultSet* be = le->executeQuery();
+
+			if (be->next())
+			{
+				cout << " You have been registered " << endl;
+
+			}
+
+
+
+			be->close();
+			le->close();
+			connection4->close();
+
+			delete be;
+			delete le;
+			delete connection4;
+
+
+		}
+		else {
+			PreparedStatement* ls = connection4->prepareStatement("INSERT INTO studentlogin (StudentID, Password, Name, matricid, address, faculty, course, subject1, subject2, subject3, subject4, subject5) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+
+			ls->setString(1, studentuserid);
+			ls->setString(2, studentpass);
+			ls->setString(3, name);
+			ls->setString(4, matric);
+			ls->setString(5, studentaddress);
+			ls->setString(6, studentfaculty);
+			ls->setString(7, studentcourse);
+			ls->setString(8, studentsubject1);
+			ls->setString(9, studentsubject2);
+			ls->setString(10, studentsubject3);
+			ls->setString(11, studentsubject4);
+			ls->setString(12, studentsubject5);
+
+			ResultSet* bs = ls->executeQuery();
+
+			if (bs->next())
+			{
+				cout << " You have been registered " << endl;
+
+			}
+
+
+
+			bs->close();
+			ls->close();
+			connection4->close();
+
+			delete bs;
+			delete ls;
+			delete connection4;
+		}
+	}
+	{
+		mysql::MySQL_Driver* driver = mysql::get_mysql_driver_instance();
+		Connection* connection5 = driver->connect("tcp://127.0.0.1:3306", "root", "");
+
+		connection5->setSchema("workshop_1");
+		PreparedStatement* gs = connection5->prepareStatement("DELETE FROM studentlogin WHERE StudentID = ?");
+
+		gs->setString(1, deletestudent);
+
+
+		ResultSet* us = gs->executeQuery();
+
+		if (us->next())
+		{
+			cout << " You have been deleted " << endl;
+
+		}
+
+
+		us->close();
+		gs->close();
+		connection5->close();
+
+		delete us;
+		delete gs;
+		delete connection5;
+
+	}
+	{
+		mysql::MySQL_Driver* driver = mysql::get_mysql_driver_instance();
+		Connection* connection6 = driver->connect("tcp://127.0.0.1:3306", "root", "");
+
+		connection6->setSchema("workshop_1");
+		PreparedStatement* xs = connection6->prepareStatement("DELETE FROM lecturerlogin WHERE LecturerID = ?");
+
+		xs->setString(1, deletelecturer);
+
+
+		ResultSet* ss = xs->executeQuery();
+
+		if (ss->next())
+		{
+			cout << " You have been deleted " << endl;
+
+		}
+
+
+		ss->close();
+		xs->close();
+		connection6->close();
+
+		delete ss;
+		delete xs;
+		delete connection6;
+	}
+	{
+		mysql::MySQL_Driver* driver = mysql::get_mysql_driver_instance();
+		Connection* connection9 = driver->connect("tcp://127.0.0.1:3306", "root", "");
+
+		connection9->setSchema("workshop_1");
+		PreparedStatement* xd = connection9->prepareStatement("INSERT INTO studentattendance WHERE attendence = 'ABSENT'");
+
+
+		ResultSet* sd = xd->executeQuery();
+		if (sd->next()) {
+			struct tm newtime;
+			time_t now = time(0);
+			localtime_s(&newtime, &now);
+			int Day = newtime.tm_mday;
+			int Month = 1 + newtime.tm_mon;
+			int Year = 1900 + newtime.tm_year;
+			int g = Day + 1;
+			stringstream ss, vv, rr, tt;
+			ss << Day;
+			vv << Month;
+			rr << Year;
+			tt << g;
+			string s, v, r, t;
+			ss >> s;
+			vv >> v;
+			rr >> r;
+			tt >> t;
+			if (s == t) {
+
+				PreparedStatement* xt = connection9->prepareStatement("SELECT * FROM studentlogin WHERE subject1 = 'FUZZY' ");
+
+
+				ResultSet* st = xt->executeQuery();
+				if (st->next()) {
+
+				  
+				  
+
+						PreparedStatement* xr = connection9->prepareStatement("INSERT INTO studentattendance (attendence) VALUE('ABSENT') WHERE attendence = 'NULL' ");
+
+
+						ResultSet* sr = xr->executeQuery();
+				   
+
+				}
+
+
+
+
+			}
+		}
+	}
+
+	return 0;
+}
