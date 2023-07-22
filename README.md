@@ -1,4 +1,4 @@
-# Student-Attendance-system
+# Student-Management-system
 
 The Student Management System have been developed to reduce the work of the lecturer 
 and student in taking and putting class attendance. For the class attendance lecturers had to ask 
